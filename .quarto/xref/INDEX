@@ -1,0 +1,14 @@
+{
+  "about.qmd": {
+    "about.html": "c0dc446e"
+  },
+  "index.qmd": {
+    "index.html": "6dac60c7"
+  },
+  "rhyme-distances.qmd": {
+    "rhyme-distances.html": "faef82aa"
+  },
+  "guides/rhyme-distances.qmd": {
+    "rhyme-distances.html": "81c414d5"
+  }
+}

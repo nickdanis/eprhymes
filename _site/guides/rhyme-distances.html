@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.554">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Nick Danis">
+<meta name="dcterms.date" content="2025-05-15">
+
+<title>EarlyPrint rhymes - Working with rhyme distances</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title"><em>EarlyPrint</em> rhymes</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../about.html" aria-current="page"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../guides/rhyme-distances.html">Guides</a></li><li class="breadcrumb-item"><a href="../guides/rhyme-distances.html">Working with rhyme distances</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../about.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Guides</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../guides/rhyme-distances.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Working with rhyme distances</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul>
+  <li><a href="#types-of-schemes" id="toc-types-of-schemes" class="nav-link" data-scroll-target="#types-of-schemes">Types of schemes</a>
+  <ul>
+  <li><a href="#ab-schemes" id="toc-ab-schemes" class="nav-link" data-scroll-target="#ab-schemes">AB-schemes</a></li>
+  <li><a href="#distance-schemes" id="toc-distance-schemes" class="nav-link" data-scroll-target="#distance-schemes">Distance schemes</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#rhyme-as-a-relation" id="toc-rhyme-as-a-relation" class="nav-link" data-scroll-target="#rhyme-as-a-relation">Rhyme as a relation</a>
+  <ul>
+  <li><a href="#perfect-rhyme" id="toc-perfect-rhyme" class="nav-link" data-scroll-target="#perfect-rhyme">Perfect rhyme</a></li>
+  <li><a href="#imperfect-rhyme" id="toc-imperfect-rhyme" class="nav-link" data-scroll-target="#imperfect-rhyme">Imperfect rhyme</a></li>
+  </ul></li>
+  <li><a href="#schemes-as-graphs" id="toc-schemes-as-graphs" class="nav-link" data-scroll-target="#schemes-as-graphs">Schemes as graphs</a></li>
+  <li><a href="#oneoffs-and-rhyme-scheme-comparisons" id="toc-oneoffs-and-rhyme-scheme-comparisons" class="nav-link" data-scroll-target="#oneoffs-and-rhyme-scheme-comparisons">Oneoffs and rhyme scheme comparisons</a>
+  <ul>
+  <li><a href="#graph-edit-distance" id="toc-graph-edit-distance" class="nav-link" data-scroll-target="#graph-edit-distance">Graph edit distance</a></li>
+  <li><a href="#string-edit-distance" id="toc-string-edit-distance" class="nav-link" data-scroll-target="#string-edit-distance">String edit distance</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../guides/rhyme-distances.html">Guides</a></li><li class="breadcrumb-item"><a href="../guides/rhyme-distances.html">Working with rhyme distances</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Working with rhyme distances</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Nick Danis </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 15, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div id="4fa1a608" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">## code preamble</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rhyme_functions <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># import pygraphviz as pgv</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyeditdistance <span class="im">import</span> distance <span class="im">as</span> d</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> graphviz</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Image</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Rhyme scheme information is presented in the tagged linegroup data in a variety of ways. One column contains the standard AABB-style rhyme schemes (henceforth ‘AB-scheme’), and another contains the <code>rhyme_distances</code> (hereafter ‘distance scheme’). In most situations where you will be searching, filtering, and comparing rhyme schemes, especially with the use of code, the rhyme distances will provide more flexibility and generality.</p>
+<section id="types-of-schemes" class="level3">
+<h3 class="anchored" data-anchor-id="types-of-schemes">Types of schemes</h3>
+<section id="ab-schemes" class="level4">
+<h4 class="anchored" data-anchor-id="ab-schemes">AB-schemes</h4>
+<p>To construct an AB-scheme generally, start at the last word of the first line of the stanza. Label this line ‘A’. Any subsequent line that rhymes (meaning, the last word of that line rhymes with the last word of the current line), label those lines ‘A’. Move to the next unlabeled line, and continue labeling with ‘B’, and so on, until all lines are labeled.</p>
+<table class="table">
+<colgroup>
+<col style="width: 77%">
+<col style="width: 14%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">regularized text</th>
+<th style="text-align: left;">final word</th>
+<th style="text-align: left;">AB-scheme</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">LO I the man, whose Muse whilom did mask,</td>
+<td style="text-align: left;">mask</td>
+<td style="text-align: left;">A</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">As time her taught, in lowly shepherds weeds,</td>
+<td style="text-align: left;">weeds</td>
+<td style="text-align: left;">B</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Am now enforced a far unfitter task,</td>
+<td style="text-align: left;">task</td>
+<td style="text-align: left;">A</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">For trumpets stern to change mine Oaten reeds:</td>
+<td style="text-align: left;">reeds</td>
+<td style="text-align: left;">B</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">And sing of Knights and Ladies gentle deeds,</td>
+<td style="text-align: left;">deeds</td>
+<td style="text-align: left;">B</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Whose praises having slept in silence long,</td>
+<td style="text-align: left;">long</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Me, all too mean, the sacred Muse areeds</td>
+<td style="text-align: left;">areeds</td>
+<td style="text-align: left;">B</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">To blazon broad amongst her learned throng:</td>
+<td style="text-align: left;">throng</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fierce wars and faithful loves shall moralise my song.</td>
+<td style="text-align: left;">song</td>
+<td style="text-align: left;">C</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="distance-schemes" class="level4">
+<h4 class="anchored" data-anchor-id="distance-schemes">Distance schemes</h4>
+<p>To construct a distance scheme, start at the first line of the stanza. Find the next line that rhymes, and count the distance away in lines (so that the next line is 1, then 2, etc) of the next line that rhymes. Label the current line with this distance. If no subsequent line rhymes, label the current line 0. (In the implementation here, this lookahead is only done up to some <code>window size</code>, in our case 4; so no distances will be found that are greater than 4.) Continue until all lines are labeled.</p>
+<table class="table">
+<colgroup>
+<col style="width: 69%">
+<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">regularized text</th>
+<th style="text-align: left;">final word</th>
+<th style="text-align: left;">scheme</th>
+<th style="text-align: left;">distance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">LO I the man, whose Muse whilom did mask,</td>
+<td style="text-align: left;">mask</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">As time her taught, in lowly shepherds weeds,</td>
+<td style="text-align: left;">weeds</td>
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Am now enforced a far unfitter task,</td>
+<td style="text-align: left;">task</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">For trumpets stern to change mine Oaten reeds:</td>
+<td style="text-align: left;">reeds</td>
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">And sing of Knights and Ladies gentle deeds,</td>
+<td style="text-align: left;">deeds</td>
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Whose praises having slept in silence long,</td>
+<td style="text-align: left;">long</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Me, all too mean, the sacred Muse areeds</td>
+<td style="text-align: left;">areeds</td>
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">To blazon broad amongst her learned throng:</td>
+<td style="text-align: left;">throng</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fierce wars and faithful loves shall moralise my song.</td>
+<td style="text-align: left;">song</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">0</td>
+</tr>
+</tbody>
+</table>
+<p>Both schemes largely overlap in what information they convey (though they are not truly equivalent); in fact, the code that searches the corpus calculates the distance scheme directly, and the AB-scheme is later deduced from this. The distance scheme more transparently encodes the rhyme information as a graph, where each line is a node and the edges (connections) are intended rhymes. Implicit in both of these schemes are the line numbers themselves; this is reflected in the order of the labels. The table below makes these explicit, and for brevity removes the words themselves so now only the line and rhyme information remains.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">line</th>
+<th style="text-align: left;">scheme</th>
+<th style="text-align: left;">distance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">0</td>
+</tr>
+</tbody>
+</table>
+<p>The table can now be read as follows: line 1 has its closest rhyme 2 lines away, line 2 has its closest rhyme 2 lines away, line 3 does not have any subsequent rhymes, and so on. Or after some arithmetic, line 1 rhymes with line 3 (current line 2 + distance 1), line 2 rhymes with line 4 (2+2), and so on.</p>
+</section>
+</section>
+</section>
+<section id="rhyme-as-a-relation" class="level2">
+<h2 class="anchored" data-anchor-id="rhyme-as-a-relation">Rhyme as a relation</h2>
+<p>A <a href="https://en.wikipedia.org/wiki/Relation_(mathematics)">relation</a> <span class="math inline">\(R\)</span> between elements of some set <span class="math inline">\(S\)</span> is a subset of <span class="math inline">\(S \times S\)</span>. In modeling the relation of rhyming, the set <span class="math inline">\(S\)</span> consists of words, and a pair of words are in <span class="math inline">\(R\)</span> if and only if they rhyme. Uncontroversally, (<em>bat</em>,<em>cat</em>) is in <span class="math inline">\(R\)</span>, but (<em>bat</em>,<em>love</em>) is not. But the intensional definition of the rhyme relationship remains to be defined.</p>
+<section id="perfect-rhyme" class="level3">
+<h3 class="anchored" data-anchor-id="perfect-rhyme">Perfect rhyme</h3>
+<p>Let’s first define an idealized notion of <em>perfect rhyme</em>. Intuitively, these are words that have <em>identical rhyme stems</em>. Assume the rhyme stem so far is just the final sequence in the word consisting of the final vowel plus any following consonants. Let the relation of <em>perfect rhyme</em> <span class="math inline">\(R_P\)</span> be such that if two words have identical rhyme stems, they perfectly rhyme. <em>Bat perfectly rhymes with cat</em> is shorthand for (<em>bat</em>,<em>love</em>) <span class="math inline">\(\in R_P\)</span>. The relation <span class="math inline">\(R_P\)</span> is therefore an <a href="https://en.wikipedia.org/wiki/Equivalence_relation">equivalence relation</a>:</p>
+<ol type="1">
+<li><span class="math inline">\(R_P\)</span> is transitive: if A perfectly rhymes with B, and B perfectly rhymes with C, then A perfectly rhymes with C.</li>
+<li><span class="math inline">\(R_P\)</span> is reflexive: for all words A, A perfectly rhymes with A.</li>
+<li><span class="math inline">\(R_P\)</span> is symmetric: if A perfectly rhymes with B, then B perfectly rhymes with A.</li>
+</ol>
+</section>
+<section id="imperfect-rhyme" class="level3">
+<h3 class="anchored" data-anchor-id="imperfect-rhyme">Imperfect rhyme</h3>
+<p>In actuality, rhymes are not all perfect. Let’s call relation of <em>imperfect rhyme</em> <span class="math inline">\(R_I\)</span>. This relation is meant to reflect the set of word pairs actually found in rhyming position (or inferred to be in rhyming position) in the corpus. Intuitively, it should still be reflexive (words still rhyme with themselves) and symmetric (if A rhymes with B, then B rhymes with A), though the notion of transitivity is less clear. (Do there actually exist situations where A is judged to rhyme with B, and B is judged to rhyme with C, but A is not judged to rhyme with C?) Thus <span class="math inline">\(R_I\)</span> will not be treated as an equivalence relation <em>a priori</em> and instead the properties of it as a relationship will themselves be objects of study.</p>
+<p>As the rhyme dictionary is not perfect, the actual set of pairs of words that are marked as rhyming will be an arbitrary collection (or at least, might trend towards an equivalence relation but will not categorically be one). For example, if a stanza is encountered that ends in the words “thee”, “be”, and “see”, and only the pairs (“thee”,“see”) and (“be”,“see”) are present in the rhyming dictionary, then a connected set of rhyming words will be found, but with a loss of transitivity (since (“thee”,“be”) is not found).</p>
+<p>Implicit in the AB-scheme representation is that each rhyme group (or <em>letter</em>) is treated as an equivalence relationship: given a three-line stanza schemed AAAA, then it is (usually) safe to assume that line 1 rhymes with lines 2, 3, and 4; line 2 rhymes with 1, 3, 4; line 3 rhymes with 1, 2, and 4, and line 4 rhymes with 1, 2, and 3. Essentially, take any two rhyming words from this stanza, and they should rhyme.</p>
+<p>What the distances schemes show instead is show the pair-level information about what specific rhyme pairs exist in the stanza, at the behest of clearly showing the overall groups of words that rhyme. For example, in a hypothetical stanza with an AB-scheme of AAA, there are two consistent distance schemes:</p>
+<ol type="1">
+<li>110</li>
+<li>210</li>
+</ol>
+<p>110 states that line 1 rhymes with line 2 (its next rhyme is a distance of 1 away), and that line 2 rhymes with line 3 (its next rhyme is also a distance of 1 away). This is what you would expect to find assuming a perfect rhyme relation with a dictionary to match. The distance scheme 210, however, says explicitly that line 1 rhymes with line 3 (being a distance of 2 away), and that line 2 also rhymes with line 3 (being a distance of 1 away). This still results in a connected subset of pairs you would expect to find in a perfect AAA representation of the stanza, but with the loss of transitivity regarding lines 1 and 2. It could be the case that the word pair from lines 1 and 2 is simply a gap in the dictionary (in which case it can be inferred), or it could be an accidental rhyme (maybe line 2 is not meant to rhyme with line 3 but the pair is erroneously in the rhyming dictionary). Such is a question for further investigation, but the crucial point here is that the distance scheme gives us a hint that something is not quite as expected.</p>
+</section>
+</section>
+<section id="schemes-as-graphs" class="level2">
+<h2 class="anchored" data-anchor-id="schemes-as-graphs">Schemes as graphs</h2>
+<p>A <em>graph</em>, in <a href="https://en.wikipedia.org/wiki/Graph_theory">purely mathematical terms</a>, is simply a pair of two sets: an <em>edge</em> set and a <em>vertex</em> (or node) set. Edges are connections between vertices (or nodes). For our purposes, the edge set of a rhyme graph will be the rhyming relation, and nodes are lines of poetry. A connection, then, between a node labeled “1” and a node labeled “3” indicates that lines 1 and 3 rhyme. Each type of rhyme scheme essentially encodes this information, so graphs will be used to both show the rhymes schemes visually but also to take advantage of the mathematical properties of graphs when working with rhyme schemes directly.</p>
+<p>The connections from the previous table are shown as an explicit graph below; the positions of the nodes are arbitrary; the only information encoded is that which is explicitly shown (i.e.&nbsp;the edges and the nodes).</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 328.02 359.28" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 355.28)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-355.28 324.02,-355.28 324.02,4 -4,4"></polygon>
+<text text-anchor="middle" x="160.01" y="-8.2" font-family="Times,serif" font-size="14.00">rhyme graph showing next closest rhyme for each line</text>
+<!-- 1 -->
+<g id="node1" class="node">
+<title>1</title>
+<ellipse fill="none" stroke="black" cx="176.91" cy="-128.44" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="176.91" y="-124.24" font-family="Times,serif" font-size="14.00">1</text>
+</g>
+<!-- 3 -->
+<g id="node2" class="node">
+<title>3</title>
+<ellipse fill="none" stroke="black" cx="248.12" cy="-117.8" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="248.12" y="-113.6" font-family="Times,serif" font-size="14.00">3</text>
+</g>
+<!-- 1&#45;&#45;3 -->
+<g id="edge1" class="edge">
+<title>1--3</title>
+<path fill="none" stroke="black" d="M203.42,-124.48C209.27,-123.6 215.48,-122.68 221.34,-121.8"></path>
+</g>
+<!-- 2 -->
+<g id="node3" class="node">
+<title>2</title>
+<ellipse fill="none" stroke="black" cx="71.91" cy="-42.8" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="71.91" y="-38.6" font-family="Times,serif" font-size="14.00">2</text>
+</g>
+<!-- 4 -->
+<g id="node4" class="node">
+<title>4</title>
+<ellipse fill="none" stroke="black" cx="87.98" cy="-113.27" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="87.98" y="-109.07" font-family="Times,serif" font-size="14.00">4</text>
+</g>
+<!-- 2&#45;&#45;4 -->
+<g id="edge2" class="edge">
+<title>2--4</title>
+<path fill="none" stroke="black" d="M76.04,-60.95C78.46,-71.55 81.5,-84.88 83.91,-95.43"></path>
+</g>
+<!-- 5 -->
+<g id="node5" class="node">
+<title>5</title>
+<ellipse fill="none" stroke="black" cx="86.37" cy="-185.49" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="86.37" y="-181.29" font-family="Times,serif" font-size="14.00">5</text>
+</g>
+<!-- 4&#45;&#45;5 -->
+<g id="edge3" class="edge">
+<title>4--5</title>
+<path fill="none" stroke="black" d="M87.57,-131.49C87.33,-142.44 87.02,-156.32 86.78,-167.27"></path>
+</g>
+<!-- 7 -->
+<g id="node6" class="node">
+<title>7</title>
+<ellipse fill="none" stroke="black" cx="77.87" cy="-257.1" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="77.87" y="-252.9" font-family="Times,serif" font-size="14.00">7</text>
+</g>
+<!-- 5&#45;&#45;7 -->
+<g id="edge4" class="edge">
+<title>5--7</title>
+<path fill="none" stroke="black" d="M84.23,-203.56C82.95,-214.33 81.33,-227.97 80.05,-238.78"></path>
+</g>
+<!-- 6 -->
+<g id="node7" class="node">
+<title>6</title>
+<ellipse fill="none" stroke="black" cx="146.91" cy="-333.28" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="146.91" y="-329.08" font-family="Times,serif" font-size="14.00">6</text>
+</g>
+<!-- 8 -->
+<g id="node8" class="node">
+<title>8</title>
+<ellipse fill="none" stroke="black" cx="190.93" cy="-275.95" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="190.93" y="-271.75" font-family="Times,serif" font-size="14.00">8</text>
+</g>
+<!-- 6&#45;&#45;8 -->
+<g id="edge5" class="edge">
+<title>6--8</title>
+<path fill="none" stroke="black" d="M159.4,-317C165.4,-309.19 172.57,-299.86 178.55,-292.07"></path>
+</g>
+<!-- 9 -->
+<g id="node9" class="node">
+<title>9</title>
+<ellipse fill="none" stroke="black" cx="215.03" cy="-207.8" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="215.03" y="-203.6" font-family="Times,serif" font-size="14.00">9</text>
+</g>
+<!-- 8&#45;&#45;9 -->
+<g id="edge6" class="edge">
+<title>8--9</title>
+<path fill="none" stroke="black" d="M197.13,-258.4C200.7,-248.31 205.18,-235.66 208.76,-225.53"></path>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>This graph has three separate, connected parts (or <em>components</em>). Each connected component represents a group of words that rhyme: the 1-3 component is the “A” group in terms of the AB-scheme, the 2-4-5-7 component the “B” group, and the 6-8-9 component the “C” group. Note that because this graph representation came directly from the distance scheme, we can annotate the graph with the words and rhyme groups from the original stanza for clarity.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 408.90 367.20" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 363.2)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-363.2 404.9,-363.2 404.9,4 -4,4"></polygon>
+<text text-anchor="middle" x="200.45" y="-8.2" font-family="Times,serif" font-size="14.00">rhyme graph annotated with line-final words and AB-scheme groups</text>
+<g id="clust1" class="cluster">
+<title>cluster_a</title>
+<polygon fill="none" stroke="black" stroke-width="0" points="43.45,-210.4 43.45,-351.2 137.45,-351.2 137.45,-210.4 43.45,-210.4"></polygon>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_b</title>
+<polygon fill="none" stroke="black" stroke-width="0" points="145.45,-32.8 145.45,-351.2 247.45,-351.2 247.45,-32.8 145.45,-32.8"></polygon>
+</g>
+<g id="clust3" class="cluster">
+<title>cluster_c</title>
+<polygon fill="none" stroke="black" stroke-width="0" points="255.45,-121.6 255.45,-351.2 357.45,-351.2 357.45,-121.6 255.45,-121.6"></polygon>
+</g>
+<!-- 1 -->
+<g id="node1" class="node">
+<title>1</title>
+<ellipse fill="none" stroke="black" cx="90.45" cy="-325.2" rx="38.83" ry="18"></ellipse>
+<text text-anchor="middle" x="90.45" y="-321" font-family="Times,serif" font-size="14.00">1 mask</text>
+</g>
+<!-- 3 -->
+<g id="node2" class="node">
+<title>3</title>
+<ellipse fill="none" stroke="black" cx="90.45" cy="-236.4" rx="33.67" ry="18"></ellipse>
+<text text-anchor="middle" x="90.45" y="-232.2" font-family="Times,serif" font-size="14.00">3 task</text>
+</g>
+<!-- 1&#45;&#45;3 -->
+<g id="edge1" class="edge">
+<title>1--3</title>
+<path fill="none" stroke="black" d="M90.45,-307.05C90.45,-291.83 90.45,-269.72 90.45,-254.51"></path>
+<text text-anchor="middle" x="97.25" y="-276.6" font-family="Times,serif" font-size="14.00"> A</text>
+</g>
+<!-- 2 -->
+<g id="node3" class="node">
+<title>2</title>
+<ellipse fill="none" stroke="black" cx="196.45" cy="-325.2" rx="42.32" ry="18"></ellipse>
+<text text-anchor="middle" x="196.45" y="-321" font-family="Times,serif" font-size="14.00">2 weeds</text>
+</g>
+<!-- 4 -->
+<g id="node4" class="node">
+<title>4</title>
+<ellipse fill="none" stroke="black" cx="196.45" cy="-236.4" rx="38.81" ry="18"></ellipse>
+<text text-anchor="middle" x="196.45" y="-232.2" font-family="Times,serif" font-size="14.00">4 reeds</text>
+</g>
+<!-- 2&#45;&#45;4 -->
+<g id="edge2" class="edge">
+<title>2--4</title>
+<path fill="none" stroke="black" d="M196.45,-307.05C196.45,-291.83 196.45,-269.72 196.45,-254.51"></path>
+<text text-anchor="middle" x="202.87" y="-276.6" font-family="Times,serif" font-size="14.00"> B</text>
+</g>
+<!-- 5 -->
+<g id="node5" class="node">
+<title>5</title>
+<ellipse fill="none" stroke="black" cx="196.45" cy="-147.6" rx="40.03" ry="18"></ellipse>
+<text text-anchor="middle" x="196.45" y="-143.4" font-family="Times,serif" font-size="14.00">5 deeds</text>
+</g>
+<!-- 4&#45;&#45;5 -->
+<g id="edge3" class="edge">
+<title>4--5</title>
+<path fill="none" stroke="black" d="M196.45,-218.25C196.45,-203.03 196.45,-180.92 196.45,-165.71"></path>
+<text text-anchor="middle" x="202.87" y="-187.8" font-family="Times,serif" font-size="14.00"> B</text>
+</g>
+<!-- 7 -->
+<g id="node6" class="node">
+<title>7</title>
+<ellipse fill="none" stroke="black" cx="196.45" cy="-58.8" rx="42.88" ry="18"></ellipse>
+<text text-anchor="middle" x="196.45" y="-54.6" font-family="Times,serif" font-size="14.00">7 areeds</text>
+</g>
+<!-- 5&#45;&#45;7 -->
+<g id="edge4" class="edge">
+<title>5--7</title>
+<path fill="none" stroke="black" d="M196.45,-129.45C196.45,-114.23 196.45,-92.12 196.45,-76.91"></path>
+<text text-anchor="middle" x="202.87" y="-99" font-family="Times,serif" font-size="14.00"> B</text>
+</g>
+<!-- 6 -->
+<g id="node7" class="node">
+<title>6</title>
+<ellipse fill="none" stroke="black" cx="306.45" cy="-325.2" rx="35.4" ry="18"></ellipse>
+<text text-anchor="middle" x="306.45" y="-321" font-family="Times,serif" font-size="14.00">6 long</text>
+</g>
+<!-- 8 -->
+<g id="node8" class="node">
+<title>8</title>
+<ellipse fill="none" stroke="black" cx="306.45" cy="-236.4" rx="43.48" ry="18"></ellipse>
+<text text-anchor="middle" x="306.45" y="-232.2" font-family="Times,serif" font-size="14.00">8 throng</text>
+</g>
+<!-- 6&#45;&#45;8 -->
+<g id="edge5" class="edge">
+<title>6--8</title>
+<path fill="none" stroke="black" d="M306.45,-307.05C306.45,-291.83 306.45,-269.72 306.45,-254.51"></path>
+<text text-anchor="middle" x="312.87" y="-276.6" font-family="Times,serif" font-size="14.00"> C</text>
+</g>
+<!-- 9 -->
+<g id="node9" class="node">
+<title>9</title>
+<ellipse fill="none" stroke="black" cx="306.45" cy="-147.6" rx="36.55" ry="18"></ellipse>
+<text text-anchor="middle" x="306.45" y="-143.4" font-family="Times,serif" font-size="14.00">9 song</text>
+</g>
+<!-- 8&#45;&#45;9 -->
+<g id="edge6" class="edge">
+<title>8--9</title>
+<path fill="none" stroke="black" d="M306.45,-218.25C306.45,-203.03 306.45,-180.92 306.45,-165.71"></path>
+<text text-anchor="middle" x="312.87" y="-187.8" font-family="Times,serif" font-size="14.00"> C</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>The rhyme graph now clearly shows six different connections between nodes, or rather 6 calculated rhymes. The previous two graphs encode the same type of rhyme scheme, the only difference is how they are visually presented.</p>
+<p>Some things to note at this point: the rhyme search procedure of the corpus looks for only the next closest rhyme before moving on, thus if an intended scheme is AAA, then lines 1 and 2 are connected, as well as 2 and 3, but the connection between 1 and 3 is not explicitly shown. These can be added for any graph by calculating the <a href="https://en.wikipedia.org/wiki/Transitive_closure"><em>transitive closure</em></a> of that graph, but since we are building our graphs based on the results of the code directly they are not shown in the above examples. In other words, the graphs built from the distance schemes directly are the <a href="https://en.wikipedia.org/wiki/Transitive_reduction">transitive reduction</a> of the intended rhyming relation.</p>
+</section>
+<section id="oneoffs-and-rhyme-scheme-comparisons" class="level2">
+<h2 class="anchored" data-anchor-id="oneoffs-and-rhyme-scheme-comparisons">Oneoffs and rhyme scheme comparisons</h2>
+<p>The rhyme search procedure is not perfect. There are both false negatives–intended rhyme pairs that the search missed–and false positives–words tagged as a rhyme that are not intended to rhyme. Among other things, this means that if there is a target scheme in mind, such as Rhyme Royal (ABABBCC), there are a number of considerations to take when searching for this exact scheme and tagged schemes that are close to this scheme.</p>
+<p>The general focus of this section is to answer the question: given two schemes, how can we quantify how similar/different they are?</p>
+<section id="graph-edit-distance" class="level3">
+<h3 class="anchored" data-anchor-id="graph-edit-distance">Graph edit distance</h3>
+<p>When treated as graphs, two rhyme schemes can be directly compared simply by asking: what nodes do they have in common, and what edges do they have in common?</p>
+</section>
+<section id="string-edit-distance" class="level3">
+<h3 class="anchored" data-anchor-id="string-edit-distance">String edit distance</h3>
+<p>Both an AB-scheme and a distance scheme can be represented as simply a string of characters: say, ABABBCC and 2201010.</p>
+<p>Consider a starting distance scheme of 220122010 (ABABBCBCC in AB-scheme terms). There are exactly six oneoffs when considering potential schemes with exactly one fewer rhyme. These are enumerated in the table below.</p>
+<div id="cell-fig-oneoff-comp" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>target_distance <span class="op">=</span> [<span class="bu">int</span>(x) <span class="cf">for</span> x <span class="kw">in</span> <span class="st">'220122010'</span>]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>oneoffs <span class="op">=</span> get_oneoffs(target_distance)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>oneoff_dict <span class="op">=</span> defaultdict(<span class="bu">list</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> oo, dist <span class="kw">in</span> oneoffs.items():</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    ab_scheme <span class="op">=</span> distances_to_ab(dist)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    dist_str <span class="op">=</span> <span class="st">''</span>.join([<span class="bu">str</span>(d) <span class="cf">for</span> d <span class="kw">in</span> dist])</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    oneoff_dict[<span class="st">'ab_scheme'</span>].append(ab_scheme)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    oneoff_dict[<span class="st">'dist_str'</span>].append(dist_str)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    oneoff_dict[<span class="st">'pair_removed'</span>].append(oo)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    oneoff_dict[<span class="st">'distances'</span>].append(dist)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(oneoff_dict)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'target_ab'</span>] <span class="op">=</span> distances_to_ab(target_distance)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'target_dist'</span>] <span class="op">=</span> <span class="st">''</span>.join([<span class="bu">str</span>(d) <span class="cf">for</span> d <span class="kw">in</span> target_distance])</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'ab_edit_distance'</span>] <span class="op">=</span> df.<span class="bu">apply</span>(<span class="kw">lambda</span> x: d.levenshtein(x[<span class="st">'ab_scheme'</span>], x[<span class="st">'target_ab'</span>]),axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'dist_edit_distance'</span>] <span class="op">=</span> df.<span class="bu">apply</span>(<span class="kw">lambda</span> x: d.levenshtein(x[<span class="st">'dist_str'</span>], x[<span class="st">'target_dist'</span>]),axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>keep <span class="op">=</span> <span class="st">"ab_scheme dist_str pair_removed ab_edit_distance dist_edit_distance"</span>.split()</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>df[keep]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div id="fig-oneoff-comp" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="10">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-oneoff-comp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">ab_scheme</th>
+<th data-quarto-table-cell-role="th">dist_str</th>
+<th data-quarto-table-cell-role="th">pair_removed</th>
+<th data-quarto-table-cell-role="th">ab_edit_distance</th>
+<th data-quarto-table-cell-role="th">dist_edit_distance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>ABCBBDBDD</td>
+<td>020122010</td>
+<td>(1, 3)</td>
+<td>4</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>ABACCDCDD</td>
+<td>200122010</td>
+<td>(2, 4)</td>
+<td>5</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>ABABCDCDD</td>
+<td>220022010</td>
+<td>(4, 5)</td>
+<td>4</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>ABABBCDCC</td>
+<td>220102010</td>
+<td>(5, 7)</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>ABABBCBDD</td>
+<td>220120010</td>
+<td>(6, 8)</td>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>ABABBCBCD</td>
+<td>220122000</td>
+<td>(8, 9)</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-oneoff-comp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Comparing the oneoffs of 220122010
+</figcaption>
+</figure>
+</div>
+</div>
+<p>The <code>pair_removed</code> column shows the line pair that rhymes in the starting scheme but not in the present oneoff. The <code>ab_edit_distance</code> column simply takes the AB-schemes as strings and calculates the string edit distance between them. Note that in general, the earlier in the stanza the rhyme difference is, the higher this edit distance is likely to be, since an early change in how a line is labeled will propogate down to the rest of the linegroup. This is <strong>not</strong> a recommended way to compare line schemes.</p>
+<p>However, taking the <strong>distance schemes</strong> as strings, and comparing those with string edit distance, gives a reliable count of the differences between the two schemes in question. Every oneoff has a count of 1 in the <code>dist_edit_distance</code> column, as in this representation, if two strings are identical except for a single rhyme, they will differ in only the position of the first word in that rhyme pair.</p>
+<p>(more to come, in progress)</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
