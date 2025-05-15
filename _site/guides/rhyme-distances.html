@@ -212,7 +212,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../terminology/rhyme_stem.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">rhyme stems</span></a>
+ <span class="menu-text">rhyme stem</span></a>
   </div>
 </li>
       </ul>
@@ -243,7 +243,6 @@ window.Quarto = {
   <li><a href="#schemes-as-graphs" id="toc-schemes-as-graphs" class="nav-link" data-scroll-target="#schemes-as-graphs">Schemes as graphs</a></li>
   <li><a href="#oneoffs-and-rhyme-scheme-comparisons" id="toc-oneoffs-and-rhyme-scheme-comparisons" class="nav-link" data-scroll-target="#oneoffs-and-rhyme-scheme-comparisons">Oneoffs and rhyme scheme comparisons</a>
   <ul>
-  <li><a href="#graph-edit-distance" id="toc-graph-edit-distance" class="nav-link" data-scroll-target="#graph-edit-distance">Graph edit distance</a></li>
   <li><a href="#string-edit-distance" id="toc-string-edit-distance" class="nav-link" data-scroll-target="#string-edit-distance">String edit distance</a></li>
   </ul></li>
   </ul>
@@ -283,7 +282,7 @@ window.Quarto = {
 </header>
 
 
-<div id="9999b5af" class="cell" data-execution_count="1">
+<div id="b2d9d424" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">## code preamble</span></span>
@@ -306,9 +305,9 @@ window.Quarto = {
 <p>To construct an AB-scheme generally, start at the last word of the first line of the stanza. Label this line ‘A’. Any subsequent line that rhymes (meaning, the last word of that line rhymes with the last word of the current line), label those lines ‘A’. Move to the next unlabeled line, and continue labeling with ‘B’, and so on, until all lines are labeled.</p>
 <table class="table">
 <colgroup>
-<col style="width: 77%">
-<col style="width: 14%">
-<col style="width: 8%">
+<col style="width: 73%">
+<col style="width: 13%">
+<col style="width: 12%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -759,14 +758,11 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="oneoffs-and-rhyme-scheme-comparisons">Oneoffs and rhyme scheme comparisons</h2>
 <p>The rhyme search procedure is not perfect. There are both false negatives–intended rhyme pairs that the search missed–and false positives–words tagged as a rhyme that are not intended to rhyme. Among other things, this means that if there is a target scheme in mind, such as Rhyme Royal (ABABBCC), there are a number of considerations to take when searching for this exact scheme and tagged schemes that are close to this scheme.</p>
 <p>The general focus of this section is to answer the question: given two schemes, how can we quantify how similar/different they are?</p>
-<section id="graph-edit-distance" class="level3">
-<h3 class="anchored" data-anchor-id="graph-edit-distance">Graph edit distance</h3>
-<p>When treated as graphs, two rhyme schemes can be directly compared simply by asking: what nodes do they have in common, and what edges do they have in common?</p>
-</section>
 <section id="string-edit-distance" class="level3">
 <h3 class="anchored" data-anchor-id="string-edit-distance">String edit distance</h3>
-<p>Both an AB-scheme and a distance scheme can be represented as simply a string of characters: say, ABABBCC and 2201010.</p>
-<p>Consider a starting distance scheme of 220122010 (ABABBCBCC in AB-scheme terms). There are exactly six oneoffs when considering potential schemes with exactly one fewer rhyme. These are enumerated in the table below.</p>
+<p><a href="https://en.wikipedia.org/wiki/Levenshtein_distance">String edit distance</a> is a measure of how different two strings (linear sequences of symbols) are, by measuring additions, removals, and substitutions between them. For example, <em>bat</em> and <em>cat</em> have an edit distance of 1 (1 substitution), while <em>bat</em> and <em>cats</em> have a distance of 2 (1 substitution and 1 addition).</p>
+<p>As both an AB-scheme and a distance scheme can be represented as simply a string of characters: say, ABABBCBCC and 220122010, it is tempting to compare scheme similarity with edit distance; however, <strong>edit distance should only be used with distance schemes</strong>.</p>
+<p>Consider a starting distance scheme of 220122010 (ABABBCBCC in AB-scheme terms). There are exactly six oneoffs of these scheme. A <strong>oneoff</strong> is a scheme that is identical to the original but with one fewer rhyme pair. These are all enumerated in the table below. Each row shows the resulting distance scheme, and the pair of line numbers that is missing from the oneoff but present in the target scheme.</p>
 <div id="cell-fig-oneoff-comp" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
@@ -792,7 +788,7 @@ window.Quarto = {
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>df[keep]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div id="fig-oneoff-comp" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="4">
+<div id="fig-oneoff-comp" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="2">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-oneoff-comp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
@@ -871,9 +867,35 @@ Figure&nbsp;1: Comparing the oneoffs of 220122010
 </figure>
 </div>
 </div>
-<p>The <code>pair_removed</code> column shows the line pair that rhymes in the starting scheme but not in the present oneoff. The <code>ab_edit_distance</code> column simply takes the AB-schemes as strings and calculates the string edit distance between them. Note that in general, the earlier in the stanza the rhyme difference is, the higher this edit distance is likely to be, since an early change in how a line is labeled will propogate down to the rest of the linegroup. This is <strong>not</strong> a recommended way to compare line schemes.</p>
+<p>The <code>ab_edit_distance</code> column simply takes the AB-schemes as strings and calculates the string edit distance between them. Note that in general, <em>the earlier in the stanza the rhyme difference is, the higher this edit distance is likely to be</em>, since an early change in how a line is labeled will propagate down to the rest of the linegroup. This is <strong>not</strong> a recommended way to compare line schemes.</p>
 <p>However, taking the <strong>distance schemes</strong> as strings, and comparing those with string edit distance, gives a reliable count of the differences between the two schemes in question. Every oneoff has a count of 1 in the <code>dist_edit_distance</code> column, as in this representation, if two strings are identical except for a single rhyme, they will differ in only the position of the first word in that rhyme pair.</p>
-<p>(more to come, in progress)</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Distance Scheme</th>
+<th style="text-align: left;">AB-scheme</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Target scheme</td>
+<td style="text-align: left;"><code>220122010</code></td>
+<td style="text-align: left;"><code>ABABBCBCC</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Example oneoff</td>
+<td style="text-align: left;"><code>020122010</code></td>
+<td style="text-align: left;"><code>ABCBBDBDD</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Edit distance</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">4</td>
+</tr>
+</tbody>
+</table>
+<p>(in progress)</p>
 
 
 </section>
