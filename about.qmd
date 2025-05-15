@@ -1,5 +1,0 @@
----
-title: "About"
----
-
-Many a little makes a mickle. 

@@ -1,0 +1,13 @@
+---
+title: "rhyme stem"
+format: html
+---
+
+A rhyme stem is the portion of the word or phrase that is relevant for rhyme evaluation/judgement.
+
+The **short rhyme stem** of a word is the final vowel of the word plus any and all consonants afterwards.
+
+The **long rhyme stem** of a word is the sequence starting at the main stress of the word and continuing until the end.
+
+To date, all rhymes are judged based off the short rhyme stem.
+

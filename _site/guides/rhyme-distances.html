@@ -160,10 +160,6 @@ window.Quarto = {
     <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link active" href="../about.html" aria-current="page"> 
-<span class="menu-text">About</span></a>
-  </li>  
 </ul>
           </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
@@ -187,12 +183,6 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../about.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">About</span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
@@ -206,6 +196,23 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../guides/rhyme-distances.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Working with rhyme distances</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Terminology</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../terminology/rhyme_stem.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">rhyme stems</span></a>
   </div>
 </li>
       </ul>
@@ -276,7 +283,7 @@ window.Quarto = {
 </header>
 
 
-<div id="ef09cf7a" class="cell" data-execution_count="1">
+<div id="9999b5af" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">## code preamble</span></span>
@@ -500,7 +507,7 @@ window.Quarto = {
 <p>A <a href="https://en.wikipedia.org/wiki/Relation_(mathematics)">relation</a> <span class="math inline">\(R\)</span> between elements of some set <span class="math inline">\(S\)</span> is a subset of <span class="math inline">\(S \times S\)</span>. In modeling the relation of rhyming, the set <span class="math inline">\(S\)</span> consists of words, and a pair of words are in <span class="math inline">\(R\)</span> if and only if they rhyme. Uncontroversally, (<em>bat</em>,<em>cat</em>) is in <span class="math inline">\(R\)</span>, but (<em>bat</em>,<em>love</em>) is not. But the intensional definition of the rhyme relationship remains to be defined.</p>
 <section id="perfect-rhyme" class="level3">
 <h3 class="anchored" data-anchor-id="perfect-rhyme">Perfect rhyme</h3>
-<p>Let’s first define an idealized notion of <em>perfect rhyme</em>. Intuitively, these are words that have <em>identical rhyme stems</em>. Assume the rhyme stem so far is just the final sequence in the word consisting of the final vowel plus any following consonants. Let the relation of <em>perfect rhyme</em> <span class="math inline">\(R_P\)</span> be such that if two words have identical rhyme stems, they perfectly rhyme. <em>Bat perfectly rhymes with cat</em> is shorthand for (<em>bat</em>,<em>love</em>) <span class="math inline">\(\in R_P\)</span>. The relation <span class="math inline">\(R_P\)</span> is therefore an <a href="https://en.wikipedia.org/wiki/Equivalence_relation">equivalence relation</a>:</p>
+<p>Let’s first define an idealized notion of <em>perfect rhyme</em>. Intuitively, these are words that have <em>identical <a href="../terminology/rhyme_stem.html">rhyme stems</a> </em>. Assume the rhyme stem so far is just the final sequence in the word consisting of the final vowel plus any following consonants. Let the relation of <em>perfect rhyme</em> <span class="math inline">\(R_P\)</span> be such that if two words have identical rhyme stems, they perfectly rhyme. <em>Bat perfectly rhymes with cat</em> is shorthand for (<em>bat</em>,<em>love</em>) <span class="math inline">\(\in R_P\)</span>. The relation <span class="math inline">\(R_P\)</span> is therefore an <a href="https://en.wikipedia.org/wiki/Equivalence_relation">equivalence relation</a>:</p>
 <ol type="1">
 <li><span class="math inline">\(R_P\)</span> is transitive: if A perfectly rhymes with B, and B perfectly rhymes with C, then A perfectly rhymes with C.</li>
 <li><span class="math inline">\(R_P\)</span> is reflexive: for all words A, A perfectly rhymes with A.</li>
@@ -785,7 +792,7 @@ window.Quarto = {
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>df[keep]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div id="fig-oneoff-comp" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="2">
+<div id="fig-oneoff-comp" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="4">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-oneoff-comp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>

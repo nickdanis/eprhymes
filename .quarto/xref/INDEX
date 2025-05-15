@@ -10,5 +10,8 @@
   },
   "guides/rhyme-distances.qmd": {
     "rhyme-distances.html": "81c414d5"
+  },
+  "terminology/rhyme_stem.qmd": {
+    "rhyme_stem.html": "4d832aaa"
   }
 }

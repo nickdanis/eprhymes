@@ -5,3 +5,5 @@ title: "Investigating rhymes in the Early Print corpus"
 This website is in progress and meant for *EarlyPrint*-internal use at the moment.
 
 The *EarlyPrint* corpus: <https://earlyprint.org/>
+
+*Many a little makes a mickle.*

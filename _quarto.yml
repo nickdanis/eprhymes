@@ -7,7 +7,6 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
   sidebar:
     style: "docked"
     contents: auto
@@ -16,7 +15,10 @@ format:
   html:
     theme: cosmo
     css: styles.css
+    code-fold: true
     toc: true
+    toc-title: "Contents"
+    toc-depth: 6
 
 
 

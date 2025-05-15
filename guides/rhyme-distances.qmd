@@ -2,12 +2,6 @@
 title: "Working with rhyme distances"
 author: Nick Danis
 date: last-modified
-format: 
-  html:
-    code-fold: true
-    toc: true
-    toc-title: "Contents"
-    toc-depth: 6
 ---
 
 ```{python}
@@ -81,7 +75,7 @@ A [relation](https://en.wikipedia.org/wiki/Relation_(mathematics)) $R$ between e
 
 ### Perfect rhyme
 
-Let's first define an idealized notion of *perfect rhyme*. Intuitively, these are words that have *identical rhyme stems*. Assume the rhyme stem so far is just the final sequence in the word consisting of the final vowel plus any following consonants. Let the relation of *perfect rhyme* $R_P$ be such that if two words have identical rhyme stems, they perfectly rhyme. *Bat perfectly rhymes with cat* is shorthand for (*bat*,*love*) $\in R_P$. The relation $R_P$ is therefore an [equivalence relation](https://en.wikipedia.org/wiki/Equivalence_relation):
+Let's first define an idealized notion of *perfect rhyme*. Intuitively, these are words that have *identical [rhyme stems](../terminology/rhyme_stem.qmd) *. Assume the rhyme stem so far is just the final sequence in the word consisting of the final vowel plus any following consonants. Let the relation of *perfect rhyme* $R_P$ be such that if two words have identical rhyme stems, they perfectly rhyme. *Bat perfectly rhymes with cat* is shorthand for (*bat*,*love*) $\in R_P$. The relation $R_P$ is therefore an [equivalence relation](https://en.wikipedia.org/wiki/Equivalence_relation):
 
 1. $R_P$ is transitive: if A perfectly rhymes with B, and B perfectly rhymes with C, then A perfectly rhymes with C. 
 2. $R_P$ is reflexive: for all words A, A perfectly rhymes with A.
