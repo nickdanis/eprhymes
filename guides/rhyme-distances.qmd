@@ -8,11 +8,13 @@ date: last-modified
 ## code preamble
 
 from rhyme_functions import *
-# import pygraphviz as pgv
+import pygraphviz as pgv
 from pyeditdistance import distance as d
 import pandas as pd
 import graphviz
 from IPython.display import Image
+from IPython.display import SVG
+from IPython.display import display
 ```
 
 ## Introduction
@@ -167,9 +169,77 @@ Some things to note at this point: the rhyme search procedure of the corpus look
 
 ## Oneoffs and rhyme scheme comparisons
 
-The rhyme search procedure is not perfect. There are both false negatives--intended rhyme pairs that the search missed--and false positives--words tagged as a rhyme that are not intended to rhyme. Among other things, this means that if there is a target scheme in mind, such as Rhyme Royal (ABABBCC), there are a number of considerations to take when searching for this exact scheme and tagged schemes that are close to this scheme.
+The rhyme search procedure is not perfect. There are both false negatives--intended rhyme pairs that the search missed--and false positives--words tagged as a rhyme that are not intended to rhyme. Among other things, this means that if there is a target scheme in mind, such as Rhyme Royal (ABABBCC), it is likely that many instances of *intended* Rhyme Royal will have a scheme that is close to but not exactly ABABBCC. 
 
 The general focus of this section is to answer the question: given two schemes, how can we quantify how similar/different they are?
+
+Let's take a case study of a Spenserian stanza with a target AB-scheme of ABABBCBCC. With no issues in rhyme detection, this results in a distance scheme of 220122010. The following graphs below represent all possible distance schemes that contain all the rhyme connections in 220122010 *except for one*. So, these are cases where we can imagine a Spenserian stanza was intended, but the rhyme detection missed a rhyme, for whatever reason. 
+
+
+```{python}
+#| label: fig-oneoff-graphs
+#| fig-cap: "The six oneoffs of 220122010"
+#| output: asis
+
+def gv_pairs(distances):
+    gv_pairs = []
+    for s, e in distances_to_pairs(distances).items():
+        if e != []:
+            gv_pairs.append((s+1, e[0]+1))
+    return gv_pairs
+
+target_distance = [2,2,0,1,2,2,0,1,0]
+ab_scheme = distances_to_ab(target_distance)
+dist_str = ''.join([str(d) for d in target_distance])
+
+G = pgv.AGraph(strict=False)
+G.graph_attr["label"] = f"{ab_scheme}\n{dist_str}"
+for pair in gv_pairs(target_distance):
+    G.add_edge(*pair)
+
+G.layout()
+G.draw('../figures/pgv-target.png',format='png')
+
+# Image('../figures/pgv-target.png')
+oneoffs = get_oneoffs(target_distance)
+image_paths = []
+
+oneoff_dict = defaultdict(list)
+for oo, dist in oneoffs.items():
+    ab_scheme = distances_to_ab(dist)
+    dist_str = ''.join([str(d) for d in dist])
+    oneoff_dict['ab_scheme'].append(ab_scheme)
+    oneoff_dict['dist_str'].append(dist_str)
+    oneoff_dict['pair_removed'].append(oo)
+    oneoff_dict['distances'].append(dist)
+    G = pgv.AGraph(strict=False)
+    G.graph_attr["label"] = f"{ab_scheme}\n{dist_str}"
+    for pair in gv_pairs(dist):
+        G.add_edge(*pair)
+    G.add_edge(*oo, style="invis")
+    for line in oo:
+        G.add_node(line, style="filled")
+    oneoff_dict['pgv'].append(G)
+    G.layout()
+    path = f'../figures/pgv-{dist_str}.svg'
+    image_paths.append(path)
+    G.draw(path, format="svg")
+
+# images = []
+# for p in image_paths:
+#   images.append(SVG(filename=p))
+# display(*images)
+
+output = "::: {layout-ncol=3}\n"
+for p in image_paths:
+  output += f"![]({p})\n\n"
+output += ":::"
+
+print(output)
+
+```
+
+Visually it is clear where the differences are: in each graph, the shaded nodes are those that are missing a rhyme relation with respect to the target scheme. The AB-scheme and distance scheme are shown below each graph. The six schemes above are referred to as **oneoffs** of the target scheme.  A oneoff is a scheme that is identical to the original but with exactly one fewer rhyme pair (the same graph minus one edge).
 
 ### String edit distance
 
@@ -177,7 +247,7 @@ The general focus of this section is to answer the question: given two schemes, 
 
 As both an AB-scheme and a distance scheme can be represented as simply a string of characters: say, ABABBCBCC and 220122010, it is tempting to compare scheme similarity with edit distance; however, **edit distance should only be used with distance schemes**. 
 
-Consider a starting distance scheme of 220122010 (ABABBCBCC in AB-scheme terms). There are exactly six oneoffs of these scheme. A **oneoff** is a scheme that is identical to the original but with one fewer rhyme pair. These are all enumerated in the table below. Each row shows the resulting distance scheme, and the pair of line numbers that is missing from the oneoff but present in the target scheme. 
+The six oneoffs of the target scheme 220122010 (ABABBCBCC) are all enumerated in the table below. Each row represents one of the graphs above, and shows the resulting distance scheme, and the pair of line numbers that is missing from the oneoff, and various measures of edit distance.  
 
 ```{python}
 #| label: fig-oneoff-comp
