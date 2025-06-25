@@ -1,0 +1,8 @@
+---
+title: "Enumerating rhyme schemes"
+author: Nick Danis
+date: last-modified
+---
+
+For a linegroup of length $n$, how many possible distance schemes are there: (a) in total? (b) where all the words rhyme?
+
